@@ -1,65 +1,53 @@
 console.log 'hello world'
 
-drawFractal = (s, depth)  ->
-    canvas = document.getElementById 'canvas'
-    canvas.width = s
-    canvas.height = s
-    context = canvas.getContext '2d'
+canvas = document.getElementById 'canvas'
+canvas.width = 400
+canvas.height = 400
+context = canvas.getContext '2d'
+
+rotateAroundPoint = (x1, y1, radians) ->
+    context.translate x1, y1
+    context.rotate radians
+    context.translate -x1, -y1
+
+drawFractal = (parentCircleRadius, context, fractalArray) ->
+    numberOfCircles = fractalArray[0]
+
+    r = (parentCircleRadius) *
+            Math.sin(Math.PI / numberOfCircles) / (1 + Math.sin(Math.PI / numberOfCircles))
     
-    rotateAroundPoint = (x1, y1, radians) ->
-        context.translate x1, y1
-        context.rotate radians
-        context.translate -x1, -y1
+    angleStart = 0
+    angleEnd = 2 * Math.PI
+
+    for circle in [1..numberOfCircles]
+        rotateAroundPoint parentCircleRadius, context.canvas.height / 2, (2 * Math.PI / numberOfCircles)
+        context.beginPath()
+        context.arc r, context.canvas.height / 2, r, angleStart, angleEnd
+        context.stroke()
+
+        if fractalArray.length > 1
+            drawFractal(r, context, fractalArray[1..])
     
-    drawCircles = (parentCircleRadius, context, numberOfCircles) ->
-        r = (parentCircleRadius) *
-                Math.sin(Math.PI / numberOfCircles) / (1 + Math.sin(Math.PI / numberOfCircles))
-        
-        angleStart = 0
-        angleEnd = 2 * Math.PI
 
-        for circle in [1..numberOfCircles]
-            rotateAroundPoint s / 2, parentCircleRadius, (2 * Math.PI / numberOfCircles)
-            context.beginPath()
-            context.arc r, parentCircleRadius, r, angleStart, angleEnd
-            context.stroke()
+angular.module 'Application', ['ngMaterial']
 
-    drawSameFractal = (parentCircleRadius, context, depth, maxDepth, numberOfCircles) ->
-        r = (parentCircleRadius) *
-                Math.sin(Math.PI / numberOfCircles) / (1 + Math.sin(Math.PI / numberOfCircles))
-        
-        angleStart = 0
-        angleEnd = 2 * Math.PI
+    .controller 'FractalController', ($scope) ->
 
-        for circle in [1..numberOfCircles]
-            rotateAroundPoint parentCircleRadius, s / 2, (2 * Math.PI / numberOfCircles)
-            context.beginPath()
-            context.arc r, s/2, r, angleStart, angleEnd
-            context.stroke()
-            
-            if depth < maxDepth
-                drawSameFractal(r, context, depth + 1, maxDepth, numberOfCircles)
-    
-    drawFractal = (parentCircleRadius, context, fractalArray) ->
-        numberOfCircles = fractalArray[0]
+        $scope.fractalOptions = {}
+        $scope.fractalOptions.levels = [3, 3]
+        $scope.fractalOptions.levelsCount = 2
 
-        r = (parentCircleRadius) *
-                Math.sin(Math.PI / numberOfCircles) / (1 + Math.sin(Math.PI / numberOfCircles))
-        
-        angleStart = 0
-        angleEnd = 2 * Math.PI
+        $scope.setLevels = (levelsCount) ->
+            while $scope.fractalOptions.levels.length > levelsCount
+                $scope.fractalOptions.levels.pop()
+            while $scope.fractalOptions.levels.length < levelsCount
+                $scope.fractalOptions.levels.push(3)
 
-        for circle in [1..numberOfCircles]
-            rotateAroundPoint parentCircleRadius, s / 2, (2 * Math.PI / numberOfCircles)
-            context.beginPath()
-            context.arc r, s/2, r, angleStart, angleEnd
-            context.stroke()
+        $scope.drawImage = ->
+            console.log $scope.fractalOptions.levels
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            drawFractal(canvas.width / 2, context, $scope.fractalOptions.levels)
 
-            if fractalArray.length > 1
-                drawFractal(r, context, fractalArray[1..])
-        
-    drawFractal(s/2, context, [11,4,5])
-    #context.stroke()
+        $scope.drawImage()
 
-drawFractal 400, 2
 

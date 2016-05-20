@@ -1,10 +1,72 @@
 <html
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Angular Material style sheet -->
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0-rc2/angular-material.min.css">
+
     <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-animate.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-aria.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-messages.min.js"></script>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0-rc2/angular-material.min.js"></script>
 </head>
 
-<body>
-    <canvas id='canvas'></canvas>
+<body ng-app='Application'>
+
+    <div ng-controller='FractalController'
+         layout-align="center center">
+        <section
+            layout="row"
+            layout-sm='column'
+            layout-align='center center'>
+            <h1> Fractal Maker! </h1>
+        </section>
+        <section
+            layout="row"
+            layout-sm='column'
+            layout-align='center center'>
+            <canvas id='canvas'></canvas>
+        </section>
+
+        <section
+            layout="row"
+            layout-sm='column'
+            layout-align='center center'>
+            <md-input-container class="md-block">
+                <label>Number of levels</label>
+                <input
+                    ng-change='setLevels(fractalOptions.levelsCount); drawImage()'
+                    ng-model="fractalOptions.levelsCount"
+                    type="number"
+                    step="1">
+            </md-input-container>
+        </section>
+        
+        <section
+            layout="row"
+            layout-sm='column'
+            layout-align='center center'>
+            <md-input-container class="md-block" ng-repeat="level in fractalOptions.levels track by $index">
+                <label>Circles for level</label>
+                <input
+                    ng-change='drawImage()'
+                    ng-model="fractalOptions.levels[$index]"
+                    type="number"
+                    step="1">
+            </md-input-container>
+        </section>
+
+        <!--<section
+            layout="row"
+            layout-sm='column'
+            layout-align='center center'>
+            <md-button
+                ng-click='createImage()'
+                class='md-raised'>Create image!</md-button>
+        </section>-->
+    </div>
 
     <script src='index.js'></script>
 </body>
