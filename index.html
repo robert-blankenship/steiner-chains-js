@@ -40,7 +40,8 @@
                     ng-change='setLevels(fractalOptions.levelsCount); drawImage()'
                     ng-model="fractalOptions.levelsCount"
                     type="number"
-                    step="1">
+                    step="1"
+                    min="1">
             </md-input-container>
         </section>
         
@@ -54,7 +55,8 @@
                     ng-change='drawImage()'
                     ng-model="fractalOptions.levels[$index]"
                     type="number"
-                    step="1">
+                    step="1"
+                    min="0">
             </md-input-container>
         </section>
 
